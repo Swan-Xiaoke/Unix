@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netCloud.admin.mapper.AdminMapper">
+  <resultMap id="BaseResultMap" type="com.netCloud.admin.domain.Admin">
+    <id column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="admin_code" jdbcType="VARCHAR" property="adminCode" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="enrolldate" jdbcType="TIMESTAMP" property="enrolldate" />
+  </resultMap>
+
+
+  <!--登录方法-->
+  <select id="login" resultMap="BaseResultMap">
+    SELECT * FROM admin_info WHERE admin_code = #{adminCode} AND password = #{password}
+  </select>
+
+</mapper>

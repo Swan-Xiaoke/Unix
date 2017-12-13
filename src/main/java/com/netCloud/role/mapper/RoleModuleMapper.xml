@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netCloud.role.mapper.RoleModuleMapper">
+
+    <resultMap id="BaseResultMap" type="com.netCloud.role.domain.Role">
+        <id column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+
+        <association property="roleModule" javaType="com.netCloud.role.domain.RoleModule">
+            <id column="role_id" property="roleId"/>
+            <id column="module_id" property="moduleId"/>
+        </association>
+
+        <association property="module" javaType="com.netCloud.role.domain.Module">
+            <id property="moduleId" column="module_id"/>
+            <result property="moduleName" column="module_name"/>
+        </association>
+
+    </resultMap>
+
+    <!--添加角色-->
+    <select id="findRole" resultType="com.netCloud.role.domain.Role">
+        SELECT *
+        FROM role_info
+        WHERE role_name = #{roleName}
+    </select>
+
+    <insert id="addRole" keyProperty="roleId" useGeneratedKeys="true">
+        INSERT INTO role_info (role_name) VALUES (#{roleName})
+    </insert>
+
+    <insert id="addMpRo">
+        INSERT INTO role_module (role_id, module_id) VALUES (#{param1}, #{param2})
+    </insert>
+
+
+    <!--查询所有角色-->
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT
+            r.role_id role_id,
+            r.role_name role_name,
+            group_concat(m.module_name SEPARATOR ',') module_name
+        FROM role_info r LEFT JOIN (role_module rm, module_info m)
+                ON r.role_id = rm.role_id AND rm.module_id = m.module_id
+        GROUP BY r.role_id
+        LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="pageCount" resultType="com.netCloud.role.domain.Role">
+        SELECT * FROM role_info
+    </select>
+</mapper>
