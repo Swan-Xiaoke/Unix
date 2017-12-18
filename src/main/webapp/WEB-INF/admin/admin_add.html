@@ -1,115 +1,243 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>云科技</title>
-        <link type="text/css" rel="stylesheet" media="all" href="../styles/global.css" />
-        <link type="text/css" rel="stylesheet" media="all" href="../styles/global_color.css" />
-        <script language="javascript" type="text/javascript">
-            //保存成功的提示消息
-            function showResult() {
-                showResultDiv(true);
-                window.setTimeout("showResultDiv(false);", 3000);
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>云科技</title>
+    <link type="text/css" rel="stylesheet" media="all" href="../styles/global.css"/>
+    <link type="text/css" rel="stylesheet" media="all" href="../styles/global_color.css"/>
+    <script src="/js/jquery-3.2.1.js"></script>
+    <script language="javascript" type="text/javascript">
+        function comebackadmin() {
+            window.location.href = "admin_list"
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/findAllRole",
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        var roleId = $("<li></li>").append("<input type='checkbox' name='roleId' value='" + result[i].roleId + "'/>" + result[i].roleName);
+                        $("#ul").append(roleId);
+                    }
+
+                }
+            })
+        });
+
+        //保存成功的提示消息
+        function showResult() {
+            //复选框传值
+            var select = false;
+            var role = [];
+            var roles = $('input[name = roleId]');
+            for (var i = 0; i < roles.length; i++) {
+                if (roles[i].checked) {
+                    select = true;
+                    role.push(roles[i].value)
+                }
             }
-            function showResultDiv(flag) {
-                var divResult = document.getElementById("save_result_info");
-                if (flag)
-                    divResult.style.display = "block";
-                else
-                    divResult.style.display = "none";
+            if (role.length == 0) {
+                role.push(0)
             }
-        </script>
-    </head>
-    <body>
-        <!--Logo区域开始-->
-        <div id="header">
-            <img src="../images/logo.png" alt="logo" class="left"/>
-            <a href="#">[退出]</a>            
-        </div>
-        <!--Logo区域结束-->
-        <!--导航区域开始-->
-        <div id="navi">
-            <ul id="menu">
-                <li><a href="../index.html" class="index_off"></a></li>
-                <li><a href="../role/role_list.html" class="role_off"></a></li>
-                <li><a href="../admin/admin_list.html" class="admin_on"></a></li>
-                <li><a href="../fee/fee_list.html" class="fee_off"></a></li>
-                <li><a href="../account/account_list.html" class="account_off"></a></li>
-                <li><a href="../service/service_list.html" class="service_off"></a></li>
-                <li><a href="../bill/bill_list.html" class="bill_off"></a></li>
-                <li><a href="../report/report_list.html" class="report_off"></a></li>
-                <li><a href="../user/user_info.html" class="information_off"></a></li>
-                <li><a href="../user/user_modi_pwd.html" class="password_off"></a></li>
+            console.log(role);
+            $.ajax({
+                url: "addAdmin",
+                traditional: true,
+                data: {
+                    "name": $("#adminName").val(),
+                    "adminCode": $("#adminCode").val(),
+                    "password": $("#password").val(),
+                    "rePassword": $("#rePassword").val(),
+                    "telephone": $("#telephone").val(),
+                    "email": $("#email").val(),
+                    "roleId": role
+                },
+                success: function (result) {
+                    //名字校验
+                    if (result.indexOf("nameEmpty") >= 0) {
+                        $("#nameError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("nameError").innerHTML = "名字不能为空"
+                    } else if (result.indexOf("nameFormat") >= 0) {
+                        $("#nameError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("nameError").innerHTML = "姓名为20长度以内的汉字、字母、数字的组合";
+                    } else {
+                        $("#nameError").removeAttr("class");
+                        document.getElementById("nameError").innerHTML = "";
+                    }
+                    //账号校验
+                    if (result.indexOf("adminCodeEmpty") >= 0) {
+                        $("#codeError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("codeError").innerHTML = "账号不能为空";
+                    } else if (result.indexOf("codeFormat") >= 0) {
+                        $("#codeError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("codeError").innerHTML = "账号为230长度以内的字母、数字和下划线的组合";
+                    } else if (result.indexOf("codeExist") >= 0) {
+                        $("#codeError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("codeError").innerHTML = "账号已存在,请重新添加";
+                    } else {
+                        $("#codeError").removeAttr("class");
+                        $("#codeError").empty();
+                    }
+
+                    //密码校验
+                    if (result.indexOf("pwdEmpty") >= 0) {
+                        $("#pwdError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("pwdError").innerHTML = "密码不能为空";
+                    } else if (result.indexOf("pwdFormat") >= 0) {
+                        $("#pwdError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("pwdError").innerHTML = "密码为30长度以内的字母、数字和下划线的组合";
+                    } else {
+                        $("#pwdError").removeAttr("class");
+                        $("#pwdError").empty();
+                    }
+
+                    //重复密码校验
+                    if (result.indexOf("rePwdEmpty") >= 0) {
+                        $("#rePwdError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("rePwdError").innerHTML = "重复密码不能为空";
+                    } else if (result.indexOf("rePwdFormat") >= 0) {
+                        $("#rePwdError").attr("class", "validate_msg_long error_msg");
+                        document.getElementById("rePwdError").innerHTML = "两次密码必须相同";
+                    } else {
+                        $("#rePwdError").removeAttr("class");
+                        $("#rePwdError").empty();
+                    }
+
+                    //电话校验
+                    if (result.indexOf("telEmpty") >= 0) {
+                        $("#telError").attr("class", "validate_msg_medium error_msg");
+                        document.getElementById("telError").innerHTML = "电话号码不能为空";
+                    } else if (result.indexOf("telFormat") >= 0) {
+                        $("#telError").attr("class", "validate_msg_medium error_msg");
+                        document.getElementById("telError").innerHTML = "请输入正确的电话号码格式(手机或固话)";
+                    } else {
+                        $("#telError").removeAttr("class");
+                        $("#telError").empty();
+                    }
+
+                    //邮箱校验
+                    if (result.indexOf("emailEmpty") >= 0) {
+                        $("#emailError").attr("class", "validate_msg_medium error_msg");
+                        document.getElementById("emailError").innerHTML = "邮箱不能为空";
+                    } else if (result.indexOf("emailFormat") >= 0) {
+                        $("#emailError").attr("class", "validate_msg_medium error_msg");
+                        document.getElementById("emailError").innerHTML = "请输入正确的 email 格式";
+                    } else {
+                        $("#emailError").removeAttr("class");
+                        $("#emailError").empty();
+                    }
+
+                    //角色校验
+                    if (result.indexOf("roleEmpty") >= 0) {
+                        $("#roleError").attr("class", "validate_msg_tiny error_msg");
+                        document.getElementById("roleError").innerHTML = "至少选择一项";
+                    } else {
+                        $("#roleError").removeAttr("class");
+                        $("#roleError").empty();
+                    }
+
+                    if (result.indexOf("success") >= 0) {
+                        showResultDiv(true);
+                        window.setTimeout("showResultDiv(false);", 3000);
+                    }
+
+                }
+
+            });
+
+        }
+
+        function showResultDiv(flag) {
+            var divResult = document.getElementById("save_result_info");
+            if (flag)
+                divResult.style.display = "block";
+            else
+                divResult.style.display = "none";
+        }
+    </script>
+</head>
+<body>
+<!--Logo区域开始-->
+<div id="header">
+    <img src="../images/logo.png" alt="logo" class="left"/>
+    <a href="#">[退出]</a>
+</div>
+<!--Logo区域结束-->
+<!--导航区域开始-->
+<div id="navi">
+    <ul id="menu">
+        <li id="0"><a href="index" class="index_on"></a></li>
+        <li id="1"><a href="role_list" class="role_off"></a></li>
+        <li id="2"><a href="admin_list" class="admin_off"></a></li>
+        <li id="3"><a href="fee_list" class="fee_off"></a></li>
+        <li id="4"><a href="account_list" class="account_off"></a></li>
+        <li id="5"><a href="ervice_list" class="service_off"></a></li>
+        <li id="6"><a href="bill_list" class="bill_off"></a></li>
+        <li id="7"><a href="report_list" class="report_off"></a></li>
+        <li id="8"><a href="user_info" class="information_off"></a></li>
+        <li id="9"><a href="user_modi_pwd" class="password_off"></a></li>
+    </ul>
+</div>
+<!--导航区域结束-->
+<!--主要区域开始-->
+<div id="main">
+    <div id="save_result_info" class="save_success">保存成功！</div>
+    <div class="text_info clearfix"><span>姓名：</span></div>
+    <div class="input_info">
+        <input type="text" id="adminName"/>
+        <span class="required">*</span>
+        <div id="nameError"></div>
+    </div>
+    <div class="text_info clearfix"><span>管理员账号：</span></div>
+    <div class="input_info">
+        <input type="text" id="adminCode"/>
+        <span class="required">*</span>
+        <div id="codeError"></div>
+    </div>
+    <div class="text_info clearfix"><span>密码：</span></div>
+    <div class="input_info">
+        <input type="password" id="password"/>
+        <span class="required">*</span>
+        <div id="pwdError"></div>
+    </div>
+    <div class="text_info clearfix"><span>重复密码：</span></div>
+    <div class="input_info">
+        <input type="password" id="rePassword"/>
+        <span class="required">*</span>
+        <div id="rePwdError"></div>
+    </div>
+    <div class="text_info clearfix"><span>电话：</span></div>
+    <div class="input_info">
+        <input type="text" class="width200" id="telephone"/>
+        <span class="required">*</span>
+        <div id="telError"></div>
+    </div>
+    <div class="text_info clearfix"><span>Email：</span></div>
+    <div class="input_info">
+        <input type="text" class="width200" id="email"/>
+        <span class="required">*</span>
+        <div id="emailError"></div>
+    </div>
+    <div class="text_info clearfix"><span>角色：</span></div>
+    <div class="input_info_high">
+        <div class="input_info_scroll">
+            <ul id="ul">
             </ul>
         </div>
-        <!--导航区域结束-->
-        <!--主要区域开始-->
-        <div id="main">            
-            <div id="save_result_info" class="save_success">保存成功！</div>
-            <form action="" method="" class="main_form">
-                    <div class="text_info clearfix"><span>姓名：</span></div>
-                    <div class="input_info">
-                        <input type="text" />
-                        <span class="required">*</span>
-                        <div class="validate_msg_long">20长度以内的汉字、字母、数字的组合</div>
-                    </div>
-                    <div class="text_info clearfix"><span>管理员账号：</span></div>
-                    <div class="input_info">
-                        <input type="text"  />
-                        <span class="required">*</span>
-                        <div class="validate_msg_long">30长度以内的字母、数字和下划线的组合</div>
-                    </div>
-                    <div class="text_info clearfix"><span>密码：</span></div>
-                    <div class="input_info">
-                        <input type="password"  />
-                        <span class="required">*</span>
-                        <div class="validate_msg_long error_msg">30长度以内的字母、数字和下划线的组合</div>
-                    </div>
-                    <div class="text_info clearfix"><span>重复密码：</span></div>
-                    <div class="input_info">
-                        <input type="password"  />
-                        <span class="required">*</span>
-                        <div class="validate_msg_long error_msg">两次密码必须相同</div>
-                    </div>      
-                    <div class="text_info clearfix"><span>电话：</span></div>
-                    <div class="input_info">
-                        <input type="text" class="width200"/>
-                        <span class="required">*</span>
-                        <div class="validate_msg_medium error_msg">正确的电话号码格式：手机或固话</div>
-                    </div>
-                    <div class="text_info clearfix"><span>Email：</span></div>
-                    <div class="input_info">
-                        <input type="text" class="width200"/>
-                        <span class="required">*</span>
-                        <div class="validate_msg_medium error_msg">50长度以内，正确的 email 格式</div>
-                    </div>
-                    <div class="text_info clearfix"><span>角色：</span></div>
-                    <div class="input_info_high">
-                        <div class="input_info_scroll">
-                            <ul>
-                                <li><input type="checkbox"  />超级管理员</li>
-                                <li><input type="checkbox" />账务账号管理员</li>
-                                <li><input type="checkbox" />业务账号管理员</li>
-                                <li><input type="checkbox" />账务账号管理员</li>
-                                <li><input type="checkbox" />业务账号管理员</li>
-                                <li><input type="checkbox" />账务账号管理员</li>
-                                <li><input type="checkbox" />业务账号管理员</li>
-                            </ul>
-                        </div>
-                        <span class="required">*</span>
-                        <div class="validate_msg_tiny error_msg">至少选择一个</div>
-                    </div>
-                    <div class="button_info clearfix">
-                        <input type="button" value="保存" class="btn_save" onclick="showResult();" />
-                        <input type="button" value="取消" class="btn_save" />
-                    </div>
-                </form>  
-        </div>
-        <!--主要区域结束-->
-        <div id="footer">
-            <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
-            <br />
-            <span>版权所有(C)云科技有限公司 </span>
-        </div>
-    </body>
+        <span class="required">*</span>
+        <div id="roleError"></div>
+    </div>
+    <div class="button_info clearfix">
+        <input type="button" value="保存" class="btn_save" onclick="showResult();"/>
+        <input type="button" value="返回" class="btn_save" onclick="comebackadmin()"/>
+    </div>
+</div>
+<!--主要区域结束-->
+<div id="footer">
+    <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
+    <br/>
+    <span>版权所有(C)云科技有限公司 </span>
+</div>
+</body>
 </html>

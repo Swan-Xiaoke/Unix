@@ -8,9 +8,39 @@
     <link type="text/css" rel="stylesheet" media="all" href="../styles/global_color.css"/>
     <script src="/js/jquery-3.2.1.js"></script>
     <script language="javascript" type="text/javascript">
-        function deleteRole() {
+        function deleteRole(value) {
             var r = window.confirm("确定要删除此角色吗？");
+            $.ajax({
+                url: "/deleteRole",
+                data: {
+                    "roleId": value
+                },
+                success: function (result) {
+                    if (result == "success") {
+                       document.getElementById("operate_result_info").innerHTML = "删除成功";
+                    } else {
+                        document.getElementById("operate_result_info").innerHTML = "删除失败,该角色已被使用";
+                    }
+                    window.setTimeout("location.href='role_list'",2000);
+                }
+             });
+
             document.getElementById("operate_result_info").style.display = "block";
+        }
+
+        function updateRole(value1, value2) {
+            $.ajax({
+                url: "/updateRole",
+                data: {
+                    "roleId": value1,
+                    "moduleId": value2
+                },
+                success: function (result) {
+                    if (result == "success") {
+                        window.location.href = "/update_Role"
+                    }
+                }
+            })
         }
 
         $(document).ready(function () {
@@ -19,51 +49,50 @@
         });
 
         function page(pageNum) {
+            if (pageNum == "") {
+                pageNum = 1
+            }
             $.ajax({
                 url: "/count",
                 type: "get",
                 data: {
                     "pageNum": pageNum
                 },
-
                 success: function (result) {
                     $("#pages").empty();
-                    console.log(result);
                     var start = $("<a href='javascript:void(0)' onclick='page(1)'>").text('首页');
                     var last = $("</a><a href='javascript:void(0)' onclick='page(" + (result.pageNum - 1) + ")'>").text('上一页');
-                    var page1 = $("</a><a href='javascript:void(0)' onclick='page(" + result.start + ")'>").text(result.start);
-                    var page2 = $("</a><a href='javascript:void(0)' onclick='page("+ (result.start+1) +")'>").text(result.start + 1);
-                    var page3 = $("</a><a href='javascript:void(0)' onclick='page("+(result.start+2)+ ")'>").text(result.start + 2);
-                    var page4 = $("</a><a href='javascript:void(0)' onclick='page("+ (result.end-1) +")'>").text(result.end - 1);
-                    var page5 = $("</a><a href='javascript:void(0)' onclick='page("+result.end+")'>").text(result.end);
-                    var next = $("</a><a href='javascript:void(0)' onclick='page("+(result.pageNum + 1)+")'>").text('下一页');
-                    var end = $("</a><a href='javascript:void(0)' onclick='page("+result.totalPage+")'>").text('尾页');
+                    var page = $("<span></span>");
+                    for(var i = result.start; i <=result.end; i++){
+                        page.append($("</a><a href='javascript:void(0)' onclick='page(" + i + ")'>").text(i));
+                    }
+                    var next = $("</a><a href='javascript:void(0)' onclick='page(" + (result.pageNum + 1) + ")'>").text('下一页');
+                    var end = $("</a><a href='javascript:void(0)' onclick='page(" + result.totalPage + ")'>").text('尾页');
                     var jump = $("</a><input type='text' size='20' style='width: 20px' name='pageNum' id='jump'>");
-                    var pages = "第" +result.pageNum +"页/共" + result.totalPage + "页";
-                    var go = $("<input type='submit' onclick='page($(\"#jump\").val())' value='go!'>");
-                    $("#pages").append(start).append(last).append(page1).append(page2).append(page3).append(page4).append(page5).append(next).append(end).append(jump).append(pages).append(go)
+                    var pages = "第" + result.pageNum + "页/共" + result.totalPage + "页";
+                    var go = $("<input type='submit' onclick='page($(\"#jump\").val())' style='border-radius:6px' value='走你!'>");
+                    $("#pages").append(start).append(last).append(page).append(next).append(end).append(jump).append(pages).append(go)
                 }
             });
 
             $("#datalist tbody").html("");
+
             $.ajax({
-                url: "findAll",
+                url: "findAllRoleByPage",
                 data: {
                     "pageNum": pageNum
                 },
                 success: function (result) {
-                    console.log(result);
                     for (var i = 0; i < result.length; i++) {
                         var roleid = $("<td></td>").text(result[i].roleId);
                         var rolename = $("<td></td>").text(result[i].roleName);
                         var module = $("<td></td>").text(result[i].module.moduleName);
-                        var change = $("<td></td>").append('<input type="button" value="修改" class="btn_modify" onclick="location.href=\'role_modi.html\';"/>').append('<input type="button" value="删除" class="btn_delete" onclick="deleteRole();"/>');
+                        var change = $("<td></td>").append('<input type="button" value="修改" class="btn_modify" onclick="updateRole(' + result[i].roleId + "," + result[i].moduleId + ')"/>').append('<input type="button" value="删除" class="btn_delete" onclick="deleteRole(' + result[i].roleId + ');"/>');
                         var page = $("<tr></tr>").append(roleid).append(rolename).append(module).append(change);
                         $("#tbody").append(page)
                     }
                 }
             });
-
         }
     </script>
 </head>
@@ -77,16 +106,16 @@
 <!--导航区域开始-->
 <div id="navi">
     <ul id="menu">
-        <li><a href="../index.html" class="index_off"></a></li>
-        <li><a href="../role/role_list.html" class="role_on"></a></li>
-        <li><a href="../admin/admin_list.html" class="admin_off"></a></li>
-        <li><a href="../fee/fee_list.html" class="fee_off"></a></li>
-        <li><a href="../account/account_list.html" class="account_off"></a></li>
-        <li><a href="../service/service_list.html" class="service_off"></a></li>
-        <li><a href="../bill/bill_list.html" class="bill_off"></a></li>
-        <li><a href="../report/report_list.html" class="report_off"></a></li>
-        <li><a href="../user/user_info.html" class="information_off"></a></li>
-        <li><a href="../user/user_modi_pwd.html" class="password_off"></a></li>
+        <li id="0"><a href="index" class="index_on"></a></li>
+        <li id="1"><a href="role_list" class="role_off"></a></li>
+        <li id="2"><a href="admin_list" class="admin_off"></a></li>
+        <li id="3"><a href="fee_list" class="fee_off"></a></li>
+        <li id="4"><a href="account_list" class="account_off"></a></li>
+        <li id="5"><a href="ervice_list" class="service_off"></a></li>
+        <li id="6"><a href="bill_list" class="bill_off"></a></li>
+        <li id="7"><a href="report_list" class="report_off"></a></li>
+        <li id="8"><a href="user_info" class="information_off"></a></li>
+        <li id="9"><a href="user_modi_pwd" class="password_off"></a></li>
     </ul>
 </div>
 <!--导航区域结束-->
@@ -98,8 +127,7 @@
     </div>
     <!--删除的操作提示-->
     <div id="operate_result_info" class="operate_success">
-        <img src="../images/close.png" onclick="this.parentNode.style.display='none';"/>
-        删除成功！
+        <img src="../images/close.png"  onclick="this.parentNode.style.display='none';"/>
     </div> <!--删除错误！该角色被使用，不能删除。-->
     <!--数据区域：用表格展示数据-->
     <div id="data">

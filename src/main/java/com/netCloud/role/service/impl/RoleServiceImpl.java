@@ -28,8 +28,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> findAll(PageBean page) {
         List<Role> roles = mapper.pageCount();
-        PageBean pageBean = new PageBean(page.getPageNum(),5,roles.size());
-        return mapper.findAll((pageBean.getPageNum()-1)*5 ,5);
+        PageBean pageBean = new PageBean(page.getPageNum(), 5, roles.size());
+        return mapper.findAll((pageBean.getPageNum() - 1) * 5, 5);
     }
 
     /**
@@ -61,7 +61,88 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public PageBean page(PageBean page) {
         int totalPage = mapper.pageCount().size();
-        return new PageBean(page.getPageNum(),5,totalPage);
+        return new PageBean(page.getPageNum(), 5, totalPage);
     }
+
+    /**
+     * 根据Id查名字
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public String findRoleNameById(int roleId) {
+        return mapper.findRoleById(roleId);
+
+    }
+
+    /**
+     * 查询所有的权限
+     *
+     * @return
+     */
+    @Override
+    public List<RoleModule> findAllModule() {
+        return mapper.findAllModule();
+    }
+
+    /**
+     * 修改角色以及角色权限
+     *
+     * @param roleId
+     * @param moduleId
+     * @return
+     */
+    @Override
+    public String updateRole(String roleName, int roleId, Integer[] moduleId) {
+        try {
+            mapper.updateRole(roleName, roleId);
+        } catch (Exception e) {
+            return "false";
+        }
+        mapper.deleteModule(roleId);
+        for (Integer integer : moduleId) {
+            mapper.addMpRo(roleId, integer);
+        }
+        return "success";
+    }
+
+
+    /**
+     * 根据Id查出
+     *
+     * @param roleId
+     * @return
+     */
+    public List<RoleModule> findModuleIdById(int roleId) {
+        return mapper.findModuleById(roleId);
+    }
+
+    /**
+     * 根据Id删除角色
+     * @param roleId
+     * @return
+     */
+    @Override
+    public String deleteRole(int roleId) {
+        List list =  mapper.findAdminByRoleId(roleId);
+        if(list.size() > 0){
+            return "false";
+        }else {
+            mapper.deleteRole(roleId);
+            mapper.deleteModule(roleId);
+            return "success";
+        }
+    }
+
+    /**
+     * 查询所有角色
+     * @return
+     */
+    @Override
+    public List<Role> findAllRole() {
+        return mapper.findAllRole();
+    }
+
 
 }

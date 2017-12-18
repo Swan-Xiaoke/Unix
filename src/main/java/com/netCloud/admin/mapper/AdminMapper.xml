@@ -1,20 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.netCloud.admin.mapper.AdminMapper">
-  <resultMap id="BaseResultMap" type="com.netCloud.admin.domain.Admin">
-    <id column="admin_id" jdbcType="INTEGER" property="adminId" />
-    <result column="admin_code" jdbcType="VARCHAR" property="adminCode" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="enrolldate" jdbcType="TIMESTAMP" property="enrolldate" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.netCloud.admin.domain.Admin">
+        <id column="admin_id"  property="adminId"/>
+        <result column="admin_code" jdbcType="VARCHAR" property="adminCode"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="enrolldate" jdbcType="TIMESTAMP" property="enrolldate"/>
+        <collection property="role" ofType="com.netCloud.role.domain.Role">
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+        </collection>
+        <collection property="module" ofType="com.netCloud.role.domain.Module">
+            <id column="module_id" property="moduleId"/>
+            <result column="module_name" property="moduleName"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="AdminRoleMapper" type="com.netCloud.role.domain.AdminRole">
+        <id column="admin_id" property="adminId"/>
+        <result column="role_id" property="roleId"/>
+    </resultMap>
+
+    <resultMap id="RoleMap" type="com.netCloud.role.domain.Role">
+        <id column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+    </resultMap>
+
+    <resultMap id="RoleModuleMap" type="com.netCloud.role.domain.RoleModule">
+        <id column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="module_id" jdbcType="VARCHAR" property="moduleId"/>
+    </resultMap>
 
 
-  <!--登录方法-->
-  <select id="login" resultMap="BaseResultMap">
-    SELECT * FROM admin_info WHERE admin_code = #{adminCode} AND password = #{password}
-  </select>
+
+    <!--添加管理员-->
+    <insert id="addAdmin" keyProperty="adminId" useGeneratedKeys="true">
+        INSERT INTO admin_info VALUES (#{adminId} ,#{adminCode},#{password},#{name},#{telephone},#{email},#{enrolldate})
+    </insert>
+    <!--添加管理员的角色信息-->
+    <insert id="addAdminRole">
+        INSERT INTO admin_role VALUES (#{param1},#{param2})
+    </insert>
+
+    <!--根据管理员Id修改员工信息-->
+    <update id="updateAdmin">
+        UPDATE admin_info SET name=#{name},telephone = #{telephone},email=#{email} WHERE admin_id=#{adminId}
+    </update>
+
+    <!--根据id删除管理员和角色的中间表-->
+    <delete id="deleteAdminRole">
+        DELETE FROM admin_role WHERE admin_id = #{param1}
+    </delete>
+
+    <!--根据Id删除管理员-->
+    <delete id="deleteAdmin">
+        DELETE FROM admin_info WHERE admin_id = #{param1}
+    </delete>
+
+    <!--登录方法-->
+    <select id="login" resultMap="BaseResultMap">
+        SELECT *
+        FROM admin_info
+        WHERE admin_code = #{adminCode} AND password = #{password}
+    </select>
+
+    <!--分页查询信息-->
+    <select id="findAdminByPage" resultMap="BaseResultMap">
+        SELECT
+            a.admin_id                               admin_id,
+            a.admin_code                             admin_code,
+            a.password                               password,
+            a.name                                   name,
+            a.telephone                              telephone,
+            a.email                                  email,
+            a.enrolldate                             enrolldate,
+            group_concat(ri.role_name SEPARATOR ',') role_name
+        FROM admin_info a  LEFT JOIN (admin_role ar, role_info ri)
+                ON a.admin_id = ar.admin_id
+                   AND ar.role_id = ri.role_id
+        <where>
+            <if test="value!= 0">
+                AND a.admin_id = #{value}
+            </if>
+        </where>
+        GROUP BY a.admin_id
+    </select>
+
+    <!--根据id查询管理员数据-->
+    <select id="findAdminById" resultMap="BaseResultMap">
+        SELECT * FROM admin_info WHERE admin_id = #{param1}
+    </select>
+
+    <!--根据Id查询管理员对应的角色-->
+    <select id="findRoleByAdminId" resultMap="AdminRoleMapper">
+        SELECT * FROM admin_role WHERE admin_id = #{param1}
+    </select>
+
+    <!--根据名字查角色-->
+    <select id="findRoleIdByRoleName" resultMap="RoleMap">
+        SELECT * FROM role_info WHERE role_name LIKE #{param1}
+    </select>
+
+    <!--根据角色Id查管理员Id-->
+    <select id="findAdminRoleByRoleId" resultMap="AdminRoleMapper">
+        SELECT * FROM admin_role WHERE role_id = #{param1}
+    </select>
+
+    <!--根据权限Id查出角色Id-->
+    <select id="findRoleIdByModuleId" resultMap="RoleModuleMap">
+        SELECT * FROM role_module WHERE module_id = #{param1}
+    </select>
 
 </mapper>

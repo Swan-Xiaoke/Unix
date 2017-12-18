@@ -15,8 +15,41 @@
             <id property="moduleId" column="module_id"/>
             <result property="moduleName" column="module_name"/>
         </association>
-
     </resultMap>
+
+    <!--权限的Mapper-->
+    <resultMap id="RoleModuleMap" type="com.netCloud.role.domain.RoleModule">
+        <id column="role_id" property="roleId"/>
+        <result column="module_id" property="moduleId"/>
+    </resultMap>
+
+    <!--管理员和角色管理Mapper-->
+    <resultMap id="AdminRoleMpper" type="com.netCloud.role.domain.AdminRole">
+        <id column="admin_id" property="adminId"/>
+        <result column="role_id" property="roleId"/>
+    </resultMap>
+
+    <!--角色Mapper-->
+    <resultMap id="RoleMapper" type="com.netCloud.role.domain.Role">
+        <id column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+    </resultMap>
+
+
+    <!--更改角色名称-->
+    <update id="updateRole">
+        UPDATE role_info SET role_name = #{param1} WHERE role_id= #{param2}
+    </update>
+
+    <!--修改权限的删除操作-->
+    <delete id="deleteModule">
+        DELETE FROM role_module WHERE role_id = #{param1}
+    </delete>
+
+    <!--删除角色名称-->
+    <delete id="deleteRole">
+        DELETE FROM role_info WHERE role_id = #{param1}
+    </delete>
 
     <!--添加角色-->
     <select id="findRole" resultType="com.netCloud.role.domain.Role">
@@ -25,28 +58,63 @@
         WHERE role_name = #{roleName}
     </select>
 
+    <!--添加角色信息-->
     <insert id="addRole" keyProperty="roleId" useGeneratedKeys="true">
         INSERT INTO role_info (role_name) VALUES (#{roleName})
     </insert>
 
+    <!--添加角色权限-->
     <insert id="addMpRo">
         INSERT INTO role_module (role_id, module_id) VALUES (#{param1}, #{param2})
     </insert>
 
-
-    <!--查询所有角色-->
+    <!--分页查询所有角色-->
     <select id="findAll" resultMap="BaseResultMap">
         SELECT
-            r.role_id role_id,
-            r.role_name role_name,
+            r.role_id                                 role_id,
+            r.role_name                               role_name,
             group_concat(m.module_name SEPARATOR ',') module_name
         FROM role_info r LEFT JOIN (role_module rm, module_info m)
                 ON r.role_id = rm.role_id AND rm.module_id = m.module_id
         GROUP BY r.role_id
-        LIMIT #{param1},#{param2}
+        LIMIT #{param1}, #{param2}
     </select>
 
+    <!--查询所有角色-->
     <select id="pageCount" resultType="com.netCloud.role.domain.Role">
-        SELECT * FROM role_info
+        SELECT *
+        FROM role_info
     </select>
+
+    <!--通过Id查询出所有的角色-->
+    <select id="findRoleById" resultType="java.lang.String">
+        SELECT role_name FROM role_info WHERE role_id = #{param1}
+    </select>
+
+    <!--通过Id查询出对应角色的所有权限-->
+    <select id="findModuleById" resultMap="RoleModuleMap">
+        SELECT module_id FROM role_module WHERE role_id = #{param1}
+    </select>
+
+    <!--查询所有权限-->
+    <resultMap id="ModuleMap" type="com.netCloud.role.domain.Module">
+        <id column="module_id" property="moduleId"/>
+        <result column="module_name" property="moduleName"/>
+    </resultMap>
+
+    <!--查询出所有权限-->
+    <select id="findAllModule" resultMap="ModuleMap">
+        SELECT * FROM module_info;
+    </select>
+
+    <!--验证角色是否被使用-->
+    <select id="findAdminByRoleId" resultMap="AdminRoleMpper">
+        SELECT * FROM admin_role WHERE role_id = #{param1}
+    </select>
+
+    <!--查询所有角色-->
+    <select id="findAllRole" resultMap="RoleMapper">
+        SELECT * FROM role_info;
+    </select>
+
 </mapper>

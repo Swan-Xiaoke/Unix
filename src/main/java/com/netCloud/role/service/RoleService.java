@@ -17,5 +17,13 @@ public interface RoleService {
 
     PageBean page(PageBean page);
 
+    String findRoleNameById(int roleId);
 
+    List<RoleModule> findAllModule();
+
+    String updateRole(String roleName,int roleId, Integer[] moduleId);
+
+    String deleteRole(int roleId);
+
+    List<Role> findAllRole();
 }
