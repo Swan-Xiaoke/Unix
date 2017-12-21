@@ -23,8 +23,6 @@
     </init-param>
   </servlet>
 
-
-
   <servlet-mapping>
     <servlet-name>SpringMvc</servlet-name>
     <url-pattern>/</url-pattern>
@@ -32,7 +30,7 @@
 
 
   <welcome-file-list>
-    <welcome-file>/WEB-INF/index.html</welcome-file>
+    <welcome-file>/WEB-INF/login.html</welcome-file>
   </welcome-file-list>
 
 </web-app>

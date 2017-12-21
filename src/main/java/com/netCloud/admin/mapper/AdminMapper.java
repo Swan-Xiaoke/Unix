@@ -98,4 +98,17 @@ public interface AdminMapper {
      * @return
      */
     List<RoleModule> findRoleIdByModuleId(int moduleId);
+
+    /**
+     * 通过角色查权限
+     * @param roleId
+     */
+    List<RoleModule> findModuleIdByRoleId(int roleId);
+
+    /**
+     * 根据角色Id查询出角色名字
+     * @return
+     */
+    List<Role> findRoleNameByRoleId(int roleId);
+
 }

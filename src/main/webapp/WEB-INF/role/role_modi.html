@@ -63,6 +63,41 @@
 
 
         $(document).ready(function () {
+            $.ajax({
+                url:"/findAdminMo",
+                success:function (result) {
+                    var index = $("<li id=0><a href='index' class='index_on'></a></li>");
+                    var user = $("<li id=8><a href='user_info' class='information_off'></a></li>");
+                    var userp = $("<li id=9><a href='user_modi_pwc' class='password_off'></a></li>");
+                    $("#menu").append(index);
+                    for(var i = 0; i < result.length;i++){
+                        console.log(result);
+                        if(result[i] == 1){
+                            $("#menu").append($('<li id="1"><a href="role_list" class="role_off"></a></li>'))
+                        }
+                        if(result[i] == 2){
+                            $("#menu").append($('<li id="2"><a href="admin_list" class="admin_off"></a></li>'))
+                        }
+                        if(result[i] == 3){
+                            $("#menu").append($('<li id="3"><a href="fee_list" class="fee_off"></a></li>'))
+                        }
+                        if(result[i] == 4){
+                            $("#menu").append($('<li id="4"><a href="account_list" class="account_off"></a></li>'))
+                        }
+                        if(result[i] == 5){
+                            $("#menu").append($('<li id="5"><a href="ervice_list" class="service_off"></a></li>'))
+                        }
+                        if(result[i] == 6){
+                            $("#menu").append($('<li id="6"><a href="bill_list" class="bill_off"></a></li>'))
+                        }
+                        if(result[i] == 7){
+                            $("#menu").append($('<li id="7"><a href="report_list" class="report_off"></a></li>'))
+                        }
+                    }
+                    $("#menu").append(user).append(userp);
+                }
+            });
+
             //显示出所有的权限
             $.ajax({
                 url: "/findAllModule",
@@ -107,16 +142,6 @@
 <!--导航区域开始-->
 <div id="navi">
     <ul id="menu">
-        <li id="0"><a href="index" class="index_on"></a></li>
-        <li id="1"><a href="role_list" class="role_off"></a></li>
-        <li id="2"><a href="admin_list" class="admin_off"></a></li>
-        <li id="3"><a href="fee_list" class="fee_off"></a></li>
-        <li id="4"><a href="account_list" class="account_off"></a></li>
-        <li id="5"><a href="ervice_list" class="service_off"></a></li>
-        <li id="6"><a href="bill_list" class="bill_off"></a></li>
-        <li id="7"><a href="report_list" class="report_off"></a></li>
-        <li id="8"><a href="user_info" class="information_off"></a></li>
-        <li id="9"><a href="user_modi_pwd" class="password_off"></a></li>
     </ul>
 </div>
 <!--导航区域结束-->

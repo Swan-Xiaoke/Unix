@@ -1,6 +1,7 @@
 package com.netCloud.admin.mapper;
 
 import com.netCloud.admin.domain.Admin;
+import com.netCloud.role.domain.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,7 +20,11 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:Unix-mybatis.xml")
 public class AdminMapperTest {
-
+    @Test
+    public void findRoleNameByRoleId() throws Exception {
+        List<Role> roleNameByRoleId = mapper.findRoleNameByRoleId(300);
+        System.out.println(roleNameByRoleId);
+    }
 
 
     @Resource

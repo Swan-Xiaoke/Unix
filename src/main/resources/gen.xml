@@ -19,34 +19,33 @@
                         userId="root"
                         password="123456"/>
 
-
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
         <!-- !!!! Model Configurations !!!! -->
-        <javaModelGenerator targetPackage="com.netCloud.role.domain"
+        <javaModelGenerator targetPackage="com.netCloud.cost.domain"
                             targetProject="./src/main/java">
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
         <!-- !!!! Mapper XML Configurations !!!! -->
-        <sqlMapGenerator targetPackage="com.netCloud.role.mapper"
+        <sqlMapGenerator targetPackage="com.netCloud.cost.mapper"
                          targetProject="./src/main/java">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
         <!-- !!!! Mapper Interface Configurations !!!! -->
-        <javaClientGenerator targetPackage="com.netCloud.role.mapper"
+        <javaClientGenerator targetPackage="com.netCloud.cost.mapper"
                              targetProject="./src/main/java"
                              type="XMLMAPPER">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
         <!-- !!!! Table Configurations !!!! -->
-        <table tableName="admin_info"
-               domainObjectName="Admin"
+        <table tableName="cost"
+               domainObjectName="Cost"
                enableCountByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false"
