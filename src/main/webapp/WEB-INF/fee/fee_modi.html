@@ -40,6 +40,13 @@
                         }
                         $("#menu").append(user).append(userp);
                     }
+                });
+
+                $.ajax({
+                    url:"echoFeeDetail",
+                    success:function (result) {
+
+                    }
                 })
             });
 

@@ -20,4 +20,11 @@ public interface CostService {
      * @return
      */
     int addCost(Cost cost);
+
+    /**
+     * 更改状态
+     * @param cost
+     * @return
+     */
+    int updateStatus(Cost cost);
 }

@@ -1,5 +1,6 @@
 package com.netCloud.cost.mapper;
 
+import com.netCloud.cost.domain.Cost;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,6 +16,14 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:Unix-mybatis.xml")
 public class CostMapperTest {
+
+    @Test
+    public void updateStatus() throws Exception {
+        Cost cost = new Cost();
+        cost.setCostId(1);
+        int i = costMapper.updateStatus(cost);
+        System.out.println(i);
+    }
 
     @Resource
     CostMapper costMapper;

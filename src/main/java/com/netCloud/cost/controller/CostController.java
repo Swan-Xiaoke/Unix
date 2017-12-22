@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by dllo on 17/12/21.
  */
 @Controller
-public class CostController {
+public class CostController{
+    @Resource
+    HttpSession session;
 
     @Resource(name = "costService")
     CostService costService;
@@ -49,9 +52,37 @@ public class CostController {
         return "fee/fee_add";
     }
 
+    /**
+     * 添加资费信息
+     * @param cost
+     * @return
+     */
     @RequestMapping(value = "/addCost")
     public int addCost(Cost cost){
         return costService.addCost(cost);
     }
+
+    /**
+     * 资费详情跳转
+     * @return
+     */
+    @RequestMapping(value = "/fee_detail")
+    @ResponseBody
+    public String feeDetailJump(int costId){
+        session.setAttribute("costId",costId);
+        return "feeDetail";
+    }
+    @RequestMapping(value = "/feeDetail")
+    public String detail(){
+        return "fee/fee_detail";
+    }
+
+    @RequestMapping(value = "/starUsing")
+    @ResponseBody
+    public int openFee(Cost cost){
+        return costService.updateStatus(cost);
+    }
+
+
 
 }

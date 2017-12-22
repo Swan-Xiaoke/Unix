@@ -42,11 +42,10 @@
                     $("#menu").append(user).append(userp);
                 }
             });
-
             findAllCost(1, "feeDESC");
         });
 
-        function findAllCost(pageNum,sort){
+        function findAllCost(pageNum, sort) {
             $.ajax({
                 url: "findAllCost",
                 data: {
@@ -59,23 +58,27 @@
                     //显示数据
                     for (var i = 0; i < result.data.length; i++) {
                         var costId = $("<td>" + result.data[i].costId + "</td>");
-                        var costName = $("<td><a href='fee_detail'>" + result.data[i].costName + "</a></td>");
+                        var costName = $("<td><a onclick='detail(" + result.data[i].costId + ")'>" + result.data[i].costName + "</a></td>");
                         var baseDuration = $("<td>" + result.data[i].baseDuration + " 小时</td>");
                         var baseCost = $("<td>" + result.data[i].baseCost + " 元</td>");
                         var unitCost = $("<td>" + result.data[i].unitCost + " 元/小时</td>");
-                        var startime = $("<td>" + result.data[i].startime + "</td>");
-                        var creatime = $("<td>" + result.data[i].creatime + "</td>");
-                        var costStatus = $("<td>" + result.data[i].costStatus + "</td>");
-                        var handle = $("<td><input type='button' value='启用' class='btn_start' onclick='startFee();'/><input type='button' value='修改' class='btn_modify' onclick='location.href=\"fee_modi\"'/><input type='button' value='删除' class='btn_delete' onclick='deleteFee();'/></td>");
+                        var startime = $("<td>" + toDate(result.data[i].startime) + "</td>");
+                        var creatime = $("<td>" + toDate(result.data[i].creatime) + "</td>");
+                        var costStatus;
+                        if (result.data[i].costStatus == 0) {
+                            costStatus = $("<td>未启用</td>");
+                        } else {
+                            costStatus = $("<td>已启用</td>");
+                        }
+                        var handle = $("<td><input type='button' value='启用' class='btn_start' onclick='startFee(" + result.data[i].costId + ");'/><input type='button' value='修改' class='btn_modify' onclick='location.href=\"fee_modi\"'/><input type='button' value='删除' class='btn_delete' onclick='deleteFee();'/></td>");
                         $("#datalist tbody").append("<tr></tr>").append(costId).append(costName).append(baseDuration).append(baseCost).append(unitCost).append(startime).append(creatime).append(costStatus).append(handle)
                     }
                     $("#pages").html("");
-
                     //分页
                     var lastpage = $("<a onclick='findAllCost(" + (pageNum - 1) + "," + JSON.stringify(sort) + ")'>上一页</a>");
                     $("#pages").append(lastpage);
                     for (var i = result.start; i <= result.end; i++) {
-                        var pages = $("<a onclick='findAllCost(" + i + ","+JSON.stringify(sort)+")'>" + i + "</a>");
+                        var pages = $("<a onclick='findAllCost(" + i + "," + JSON.stringify(sort) + ")'>" + i + "</a>");
                         $("#pages").append(pages)
                     }
                     var nextpage = $("<a onclick='findAllCost(" + (pageNum + 1) + "," + JSON.stringify(sort) + ")'>下一页</a>");
@@ -96,14 +99,58 @@
         }
 
         //启用
-        function startFee() {
+        function startFee(costId) {
             var r = window.confirm("确定要启用此资费吗？资费启用后将不能修改和删除。");
-            document.getElementById("operate_result_info").style.display = "block";
+            if (r) {
+                $.ajax({
+                    url: "starUsing",
+                    data: {
+                        "costId": costId
+                    },
+                    success: function (result) {
+                        if (result == 1) {
+                            document.getElementById("operate_result_info").style.display = "block";
+                            document.getElementById("operate_result_info").innerHTML = "启用成功";
+                            window.setTimeout('location.href = "fee_list"',2000);
+                        }
+                    }
+                })
+            }
         }
+
         //删除
         function deleteFee() {
             var r = window.confirm("确定要删除此资费吗？");
-            document.getElementById("operate_result_info").style.display = "block";
+            if (r) {
+                document.getElementById("operate_result_info").style.display = "block";
+                document.getElementById("operate_result_info").innerHTML = "删除成功";
+            }
+        }
+
+        function detail(costId) {
+            console.log(costId);
+            $.ajax({
+                url: "fee_detail",
+                data: {
+                    "costId": costId
+                },
+                success: function (result) {
+                    console.log(result);
+                    window.location.href = result
+                }
+            })
+        }
+
+        function toDate(date) {
+            var date = new Date(date);
+            Y = date.getFullYear() + '-';
+            M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+            D = date.getDate() + ' ';
+            h = date.getHours() + ':';
+            m = date.getMinutes() + ':';
+            s = date.getSeconds();
+            var dateTime = Y + M + D + h + m + s;
+            return dateTime;
         }
     </script>
 </head>
@@ -134,7 +181,7 @@
         <!--启用操作的操作提示-->
         <div id="operate_result_info" class="operate_success">
             <img src="../images/close.png" onclick="this.parentNode.style.display='none';"/>
-            删除成功！
+
         </div>
         <!--数据区域：用表格展示数据-->
         <div id="data">
@@ -149,7 +196,7 @@
                     <th>创建时间</th>
                     <th>开通时间</th>
                     <th class="width50">状态</th>
-                    <th class="width200"></th>
+                    <th class="width200">操作</th>
                 </tr>
                 </thead>
                 <tbody>

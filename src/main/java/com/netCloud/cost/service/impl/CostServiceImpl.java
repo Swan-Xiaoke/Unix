@@ -66,4 +66,14 @@ public class CostServiceImpl implements CostService {
         cost.setCreatime(new Date());
         return costMapper.addCost(cost);
     }
+
+    /**
+     * 更改资费状态
+     * @param cost
+     * @return
+     */
+    @Override
+    public int updateStatus(Cost cost) {
+        return costMapper.updateStatus(cost);
+    }
 }
