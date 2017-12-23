@@ -24,28 +24,28 @@
         </javaTypeResolver>
 
         <!-- !!!! Model Configurations !!!! -->
-        <javaModelGenerator targetPackage="com.netCloud.cost.domain"
+        <javaModelGenerator targetPackage="com.netCloud.account.domain"
                             targetProject="./src/main/java">
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
         <!-- !!!! Mapper XML Configurations !!!! -->
-        <sqlMapGenerator targetPackage="com.netCloud.cost.mapper"
+        <sqlMapGenerator targetPackage="com.netCloud.account.mapper"
                          targetProject="./src/main/java">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
         <!-- !!!! Mapper Interface Configurations !!!! -->
-        <javaClientGenerator targetPackage="com.netCloud.cost.mapper"
+        <javaClientGenerator targetPackage="com.netCloud.account.mapper"
                              targetProject="./src/main/java"
                              type="XMLMAPPER">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
         <!-- !!!! Table Configurations !!!! -->
-        <table tableName="cost"
-               domainObjectName="Cost"
+        <table tableName="account"
+               domainObjectName="Account"
                enableCountByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false"

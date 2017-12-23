@@ -58,19 +58,22 @@
                     "unitCost": $("#unitC").val()
                 },
                 success: function (result) {
+                    alert(result);
                     if (result == 1) {
                         showResultDiv(true);
-                        window.setTimeout("showResultDiv(false);", 3000);
+                        window.setTimeout("showResultDiv(false);", 2000);
                     }
                 }
             });
         }
         function showResultDiv(flag) {
             var divResult = document.getElementById("save_result_info");
-            if (flag)
+            if (flag){
+                divResult.innerHTML = "保存成功";
                 divResult.style.display = "block";
-            else
-                divResult.style.display = "none";
+            } else {
+                divResult.style.display = "block";
+            }
         }
 
         //切换资费类型
@@ -122,7 +125,7 @@
 <!--导航区域结束-->
 <!--主要区域开始-->
 <div id="main">
-    <!--<div id="save_result_info" class="save_fail">保存失败，资费名称重复！</div>-->
+    <div id="save_result_info" class="save_fail"></div>
     <div class="text_info clearfix"><span>资费名称：</span></div>
     <div class="input_info">
         <input type="text" class="width300" value="" id="costName"/>

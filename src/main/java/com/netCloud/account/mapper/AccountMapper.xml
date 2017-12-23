@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netCloud.account.mapper.AccountMapper" >
+  <resultMap id="BaseResultMap" type="com.netCloud.account.domain.Account" >
+    <id column="account_id" property="accountId" jdbcType="INTEGER" />
+    <result column="recommender_id" property="recommenderId" jdbcType="INTEGER" />
+    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="login_passwd" property="loginPasswd" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="pause_date" property="pauseDate" jdbcType="TIMESTAMP" />
+    <result column="close_date" property="closeDate" jdbcType="TIMESTAMP" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="idcard_no" property="idcardNo" jdbcType="CHAR" />
+    <result column="birthdate" property="birthdate" jdbcType="TIMESTAMP" />
+    <result column="gender" property="gender" jdbcType="VARCHAR" />
+    <result column="occupation" property="occupation" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="mailaddress" property="mailaddress" jdbcType="VARCHAR" />
+    <result column="zipcode" property="zipcode" jdbcType="CHAR" />
+    <result column="qq" property="qq" jdbcType="VARCHAR" />
+    <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
+    <result column="last_login_ip" property="lastLoginIp" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    account_id, recommender_id, login_name, login_passwd, status, create_date, pause_date, 
+    close_date, real_name, idcard_no, birthdate, gender, occupation, telephone, email, 
+    mailaddress, zipcode, qq, last_login_time, last_login_ip
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from account
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from account
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.netCloud.account.domain.Account" >
+    insert into account (account_id, recommender_id, login_name, 
+      login_passwd, status, create_date, 
+      pause_date, close_date, real_name, 
+      idcard_no, birthdate, gender, 
+      occupation, telephone, email, 
+      mailaddress, zipcode, qq, 
+      last_login_time, last_login_ip)
+    values (#{accountId,jdbcType=INTEGER}, #{recommenderId,jdbcType=INTEGER}, #{loginName,jdbcType=VARCHAR}, 
+      #{loginPasswd,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{pauseDate,jdbcType=TIMESTAMP}, #{closeDate,jdbcType=TIMESTAMP}, #{realName,jdbcType=VARCHAR}, 
+      #{idcardNo,jdbcType=CHAR}, #{birthdate,jdbcType=TIMESTAMP}, #{gender,jdbcType=VARCHAR}, 
+      #{occupation,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{mailaddress,jdbcType=VARCHAR}, #{zipcode,jdbcType=CHAR}, #{qq,jdbcType=VARCHAR}, 
+      #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLoginIp,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.netCloud.account.domain.Account" >
+    insert into account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="accountId != null" >
+        account_id,
+      </if>
+      <if test="recommenderId != null" >
+        recommender_id,
+      </if>
+      <if test="loginName != null" >
+        login_name,
+      </if>
+      <if test="loginPasswd != null" >
+        login_passwd,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="pauseDate != null" >
+        pause_date,
+      </if>
+      <if test="closeDate != null" >
+        close_date,
+      </if>
+      <if test="realName != null" >
+        real_name,
+      </if>
+      <if test="idcardNo != null" >
+        idcard_no,
+      </if>
+      <if test="birthdate != null" >
+        birthdate,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="occupation != null" >
+        occupation,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="mailaddress != null" >
+        mailaddress,
+      </if>
+      <if test="zipcode != null" >
+        zipcode,
+      </if>
+      <if test="qq != null" >
+        qq,
+      </if>
+      <if test="lastLoginTime != null" >
+        last_login_time,
+      </if>
+      <if test="lastLoginIp != null" >
+        last_login_ip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="accountId != null" >
+        #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderId != null" >
+        #{recommenderId,jdbcType=INTEGER},
+      </if>
+      <if test="loginName != null" >
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPasswd != null" >
+        #{loginPasswd,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pauseDate != null" >
+        #{pauseDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeDate != null" >
+        #{closeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardNo != null" >
+        #{idcardNo,jdbcType=CHAR},
+      </if>
+      <if test="birthdate != null" >
+        #{birthdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mailaddress != null" >
+        #{mailaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="zipcode != null" >
+        #{zipcode,jdbcType=CHAR},
+      </if>
+      <if test="qq != null" >
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginIp != null" >
+        #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.netCloud.account.domain.Account" >
+    update account
+    <set >
+      <if test="recommenderId != null" >
+        recommender_id = #{recommenderId,jdbcType=INTEGER},
+      </if>
+      <if test="loginName != null" >
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPasswd != null" >
+        login_passwd = #{loginPasswd,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pauseDate != null" >
+        pause_date = #{pauseDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeDate != null" >
+        close_date = #{closeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardNo != null" >
+        idcard_no = #{idcardNo,jdbcType=CHAR},
+      </if>
+      <if test="birthdate != null" >
+        birthdate = #{birthdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        occupation = #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mailaddress != null" >
+        mailaddress = #{mailaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="zipcode != null" >
+        zipcode = #{zipcode,jdbcType=CHAR},
+      </if>
+      <if test="qq != null" >
+        qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginIp != null" >
+        last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.netCloud.account.domain.Account" >
+    update account
+    set recommender_id = #{recommenderId,jdbcType=INTEGER},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      login_passwd = #{loginPasswd,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      pause_date = #{pauseDate,jdbcType=TIMESTAMP},
+      close_date = #{closeDate,jdbcType=TIMESTAMP},
+      real_name = #{realName,jdbcType=VARCHAR},
+      idcard_no = #{idcardNo,jdbcType=CHAR},
+      birthdate = #{birthdate,jdbcType=TIMESTAMP},
+      gender = #{gender,jdbcType=VARCHAR},
+      occupation = #{occupation,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      mailaddress = #{mailaddress,jdbcType=VARCHAR},
+      zipcode = #{zipcode,jdbcType=CHAR},
+      qq = #{qq,jdbcType=VARCHAR},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR}
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </update>
+</mapper>

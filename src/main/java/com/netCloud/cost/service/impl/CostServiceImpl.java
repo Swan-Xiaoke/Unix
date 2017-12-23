@@ -7,6 +7,7 @@ import com.netCloud.utils.page.PageBean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
  */
 @Service("costService")
 public class CostServiceImpl implements CostService {
+    @Resource
+    HttpSession session;
     @Resource
     CostMapper costMapper;
 
@@ -74,6 +77,58 @@ public class CostServiceImpl implements CostService {
      */
     @Override
     public int updateStatus(Cost cost) {
+        cost.setStartime(new Date());
+        System.out.println(cost);
         return costMapper.updateStatus(cost);
+    }
+
+    /**
+     * 通过id查询资费
+     * @param costId
+     * @return
+     */
+    @Override
+    public Cost findCostById(int costId) {
+        return costMapper.findCostById(costId);
+    }
+
+    /**
+     * 删除资费信息
+     * @param costId
+     * @return
+     */
+    @Override
+    public int deleteCost(int costId) {
+        Cost cost = costMapper.findCostById(costId);
+        if(cost.getCostStatus() == 0){
+            return costMapper.deleteCostById(costId);
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     * 验证是否可以修改
+     * @param costId
+     * @return
+     */
+    @Override
+    public String updateCostJump(int costId) {
+        if (costMapper.findCostById(costId).getCostStatus() == 0){
+            session.setAttribute("costId",costId);
+            return "success";
+        }else {
+            return "false";
+        }
+    }
+
+    /**
+     * 修改资费信息
+     * @param cost
+     * @return
+     */
+    @Override
+    public int updateCost(Cost cost) {
+        return costMapper.updateCost(cost);
     }
 }

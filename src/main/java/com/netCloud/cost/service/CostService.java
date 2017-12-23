@@ -27,4 +27,32 @@ public interface CostService {
      * @return
      */
     int updateStatus(Cost cost);
+
+    /**
+     * 根据Id查资费
+     * @param costId
+     * @return
+     */
+    Cost findCostById(int costId);
+
+    /**
+     * 删除资费信息
+     * @param costId
+     * @return
+     */
+    int deleteCost(int costId);
+
+    /**
+     * 验证是否可以修改
+     * @param costId
+     * @return
+     */
+    String updateCostJump(int costId);
+
+    /**
+     * 修改资费信息
+     * @param cost
+     * @return
+     */
+    int updateCost(Cost cost);
 }
